@@ -1,0 +1,175 @@
+// import { useEffect, useRef } from "react";
+// import { TabulatorFull as Tabulator } from "tabulator-tables";
+// import "tabulator-tables/dist/css/tabulator.min.css"; // Required CSS
+
+// function DataTable() {
+//   const tableRef = useRef(null);
+
+//   // Sample attendance data
+//   const attendanceData = [
+//     { id: 1, name: "Alice", present: true, date: "2023-10-01" },
+//     { id: 2, name: "Bob", present: false, date: "2023-10-01" },
+//   ];
+
+//   useEffect(() => {
+//     const table = new Tabulator(tableRef.current, {
+//       data: attendanceData,
+//       columns: [
+//         { title: "ID", field: "id", width: 70 },
+//         { title: "Name", field: "name", width: 150 },
+//         {
+//           title: "Status",
+//           field: "present",
+//           formatter: (cell) => (cell.getValue() ? "✅ Present" : "❌ Absent"),
+//         },
+//         { title: "Date", field: "date" },
+//       ],
+//       layout: "fitColumns", // Auto-adjust column widths
+//       pagination: "local", // Enable pagination
+//       paginationSize: 10, // Rows per page
+//     });
+//   }, []);
+
+//   return (
+//     <div className="container">
+//       <h2>Student Attendance</h2>
+//       <div ref={tableRef}></div>
+//     </div>
+//   );
+// }
+
+// export default DataTable;
+
+// const CSV_URL =
+//   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7sSCKrR3Q2stl_6yfcVJOrrakA2SJFABm_JtegbC8dD8SzBctjUyL94N3GZ5H3i2p58RQ0d641xYi/pub?gid=457764126&single=true&output=csvE";
+
+// import React, { useState, useEffect, useRef } from "react";
+// import { TabulatorFull as Tabulator } from "tabulator-tables";
+// import "tabulator-tables/dist/css/tabulator.min.css";
+// import { fetchPageData, updateRow } from "../services/googleSheetsService";
+
+// const APPS_SCRIPT_URL =
+//   "https://script.google.com/macros/s/AKfycbyxay9MtJma37qCr6O81ew7uReaQuTA3xCsE_nyW198vC8AP6d2wsYIwguE37q9IEA3/exec"; // Paste your web app URL here
+// const ROWS_PER_PAGE = 50;
+
+// export default function DataTable() {
+//   const [page, setPage] = useState(1);
+//   const [totalPages, setTotalPages] = useState(1);
+//   const [loading, setLoading] = useState(false);
+//   const [data, setData] = useState([]);
+//   const tableRef = useRef(null);
+//   const tabulatorRef = useRef(null);
+
+//   useEffect(() => {
+//     setLoading(true);
+//     fetchPageData(APPS_SCRIPT_URL, page)
+//       .then(({ data, totalPages }) => {
+//         setData(data);
+//         setTotalPages(totalPages);
+//         setLoading(false);
+//       })
+//       .catch((err) => {
+//         console.error(err);
+//         setLoading(false);
+//       });
+//   }, [page]);
+
+//   useEffect(() => {
+//     if (tableRef.current) {
+//       if (tabulatorRef.current) {
+//         tabulatorRef.current.setData(data);
+//       } else {
+//         tabulatorRef.current = new Tabulator(tableRef.current, {
+
+//           index: "unique_id",
+//           data,
+//           layout: "fitColumns",
+//           autoColumns: true,
+//           cellEdited: (cell) => {
+//             const row = cell.getRow().getData();
+//             // Calculate actual sheet row number:
+//             const rowIndexInPage = cell.getRow().getPosition(); // zero-based index on current page
+//             const actualRowNumber =
+//               (page - 1) * ROWS_PER_PAGE + rowIndexInPage + 2; // +2 for header row offset
+
+//             updateRow(APPS_SCRIPT_URL, actualRowNumber, row)
+//               .then(() => alert("Saved successfully!"))
+//               .catch(() => alert("Failed to save changes!"));
+//           },
+//         });
+//       }
+//     }
+//   }, [data]);
+
+//   return (
+//     <div>
+//       <h2>Mentors Data Table</h2>
+//       {loading && <p>Loading...</p>}
+//       <div ref={tableRef}></div>
+//       <div style={{ marginTop: 10 }}>
+//         <button
+//           onClick={() => setPage((p) => Math.max(1, p - 1))}
+//           disabled={page === 1}
+//         >
+//           Previous
+//         </button>
+//         <span>
+//           {" "}
+//           Page {page} of {totalPages}{" "}
+//         </span>
+//         <button
+//           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+//           disabled={page === totalPages}
+//         >
+//           Next
+//         </button>
+//       </div>
+//     </div>
+//   );
+// }
+
+// import React, { useEffect, useRef } from "react";
+// import { TabulatorFull as Tabulator } from "tabulator-tables";
+// import "tabulator-tables/dist/css/tabulator.min.css";
+
+// export default function DataTable() {
+//   const tableRef = useRef(null);
+//   const tabulatorRef = useRef(null);
+
+//   useEffect(() => {
+//     if (tableRef.current && !tabulatorRef.current) {
+//       tabulatorRef.current = new Tabulator(tableRef.current, {
+//         ajaxURL: APPS_SCRIPT_URL,
+//         ajaxConfig: {
+//           method: "GET",
+//         },
+//         ajaxContentType: "json", // send parameters to the server as a JSON encoded string
+//         paginationSize: 50,
+//         paginationInitialPage: 1,
+//         ajaxResponse: function (url, params, response) {
+//           //url - the URL of the request
+//           //params - the parameters passed with the request
+//           //response - the JSON object returned in the body of the response.
+
+//           console.log(url);
+//           console.log(params);
+//           console.log(response);
+
+//           return response.tableData; //return the tableData property of a response json object
+//         },
+//         autoColumns: true,
+//         // columns: [
+//         //   { title: "Name", field: "Name", editor: "input" },
+//         //   { title: "Email", field: "Email", editor: "input" },
+//         //   // Add your other columns here
+//         // ],
+//         cellEdited: (cell) => {
+//           // Handle saving edited cell back to backend here
+//           // (You can send a POST request with updated data)
+//         },
+//       });
+//     }
+//   }, []);
+
+//   return <div ref={tableRef}></div>;
+// }
