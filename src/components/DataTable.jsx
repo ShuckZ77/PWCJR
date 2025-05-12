@@ -1,3 +1,4 @@
+import "./DataTable.css";
 import React, { useEffect, useRef, useState } from "react";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "tabulator-tables/dist/css/tabulator.min.css";
@@ -6,7 +7,8 @@ import { fetchPageData, updateRow } from "../services/googleSheetsService";
 import { columnsDef } from "../helpers/columns_def";
 
 const GAS_URL =
-  "https://script.google.com/macros/s/AKfycbyxay9MtJma37qCr6O81ew7uReaQuTA3xCsE_nyW198vC8AP6d2wsYIwguE37q9IEA3/exec";//import.meta.env.VITE_GAS_WEBAPP_URL
+  "https://script.google.com/macros/s/AKfycbyxay9MtJma37qCr6O81ew7uReaQuTA3xCsE_nyW198vC8AP6d2wsYIwguE37q9IEA3/exec"; //import.meta.env.VITE_GAS_WEBAPP_URL
+
 const PAGE_SIZE = 50;
 
 export default function DataTable() {
@@ -14,19 +16,33 @@ export default function DataTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [initializing, setInitializing] = useState(true);
+  const getParams = {
+    webAppUrl: GAS_URL,
+    page: currentPage,
+    size: 50,
+    email: "",
+  };
+
+  // console.log(currentPage);
+  // console.log(getParams);
 
   async function loadPage(page) {
+    getParams.page = page;
     const table = getTableInstance();
 
     if (table) {
       table.alert("Please wait, loading data...");
     }
+
     setLoading(true);
 
     try {
       const { data, totalPages, currentPage } = await fetchPageData(
-        GAS_URL,
-        page
+        getParams.webAppUrl,
+        getParams.page,
+        getParams.size,
+        getParams.email
       );
       if (table) {
         await table.setData(data);
@@ -53,18 +69,23 @@ export default function DataTable() {
     async function setupTable() {
       // Fetch first page data before creating table
       if (tableRef.current && !getTableInstance()) {
+        setInitializing(true);
+
         const { data, totalPages, currentPage } = await fetchPageData(
-          GAS_URL,
-          1
+          getParams.webAppUrl,
+          getParams.page,
+          getParams.size,
+          getParams.email
         );
+
         const table = new Tabulator(tableRef.current, {
           index: "unique_id",
-          height: "80%",
+          height: "100%",
           layout: "fitDataStretch",
           pagination: false,
           data: data,
-          // autoColumns: true,
           columns: columnsDef,
+          groupBy: "userid",
           cellEdited: async (cell) => {
             const rowData = cell.getRow().getData();
             const uniqueId = rowData.unique_id;
@@ -104,12 +125,11 @@ export default function DataTable() {
   }, []);
 
   return (
-    <div>
-      <div style={{ margin: '1rem' }}>
-        <div className="alert alert-primary" role="alert">
-          A simple primary alert—check it out!
-        </div>
+    <>
+      <div className="m-3">
         <button
+          type="button"
+          className="btn btn-dark"
           onClick={() => loadPage(currentPage - 1)}
           disabled={loading || currentPage === 1}
         >
@@ -121,13 +141,18 @@ export default function DataTable() {
         </span>
 
         <button
+          type="button"
+          className="btn btn-dark"
           onClick={() => loadPage(currentPage + 1)}
           disabled={loading || currentPage === totalPages}
         >
           Next
         </button>
       </div>
-      <div ref={tableRef} style={{margin: '1rem'}}></div>
-    </div>
+
+      <div className="table-container">
+        <div ref={tableRef}></div>
+      </div>
+    </>
   );
 }
