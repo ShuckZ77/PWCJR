@@ -1,0 +1,13 @@
+/* Fill entire visible height minus, say, 100px for header/controls */
+.table-container {
+    width: 100%;
+    height: calc(100vh - 100px);
+    /* optional: to make Tabulator’s virtual DOM play nice */
+    position: relative;
+}
+
+/* Ensure the inner div also fills */
+.table-container>div {
+    width: 100%;
+    height: 100%;
+}
