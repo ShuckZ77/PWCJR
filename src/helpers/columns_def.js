@@ -22,54 +22,29 @@ function absentFormatter(cell) {
 
 export const columnsDef = [
   {
-    title: "unique_id",
-    field: "unique_id",
-  },
-  {
     title: "class_date",
     field: "class_date",
     // sorter: "string",
     headerFilter: true,
   },
   {
-    title: "date",
-    field: "date",
-    visible: true,
+    title: "batch_id",
+    field: "batch_id",
     // sorter: "string",
   },
   {
-    title: "day",
-    field: "day",
-    sorter: "string",
-  },
-  {
-    title: "month",
-    field: "month",
+    title: "user_id",
+    field: "user_id",
     // sorter: "string",
   },
   {
-    title: "year",
-    field: "year",
+    title: "room_id",
+    field: "room_id",
     // sorter: "string",
   },
   {
-    title: "userid",
-    field: "userid",
-    // sorter: "string",
-  },
-  {
-    title: "batchid",
-    field: "batchid",
-    // sorter: "string",
-  },
-  {
-    title: "roomid",
-    field: "roomid",
-    // sorter: "string",
-  },
-  {
-    title: "usercount",
-    field: "usercount",
+    title: "user_count",
+    field: "user_count",
     // sorter: "string",
   },
   {
@@ -109,8 +84,8 @@ export const columnsDef = [
     headerFilter: true,
   },
   {
-    title: "primarynumber",
-    field: "primarynumber",
+    title: "primary_number",
+    field: "primary_number",
     // sorter: "string",
   },
   {
@@ -120,13 +95,25 @@ export const columnsDef = [
     headerFilter: true,
   },
   {
+    title: "payment_type",
+    field: "payment_type",
+    // sorter: "string",
+    headerFilter: true,
+  },
+  {
+    title: "payment_status",
+    field: "payment_status",
+    // sorter: "string",
+    headerFilter: true,
+  },
+  {
     title: "first_payment_date",
     field: "first_payment_date",
     // sorter: "string",
   },
   {
-    title: "e-mandate",
-    field: "e-mandate",
+    title: "e_mandate",
+    field: "e_mandate",
     // sorter: "string",
   },
   {
@@ -137,6 +124,16 @@ export const columnsDef = [
   {
     title: "erp_id",
     field: "erp_id",
+    // sorter: "string",
+  },
+  {
+    title: "date_range",
+    field: "date_range",
+    // sorter: "string",
+  },
+  {
+    title: "date_span",
+    field: "date_span",
     // sorter: "string",
   },
   {
@@ -156,14 +153,19 @@ export const columnsDef = [
     // sorter: "string",
   },
   {
-    title: "attendance",
-    field: "attendance",
+    title: "attendance_status",
+    field: "attendance_status",
     headerFilter: true,
     formatter: absentFormatter,
   },
   {
-    title: "absent_count",
-    field: "absent_count",
+    title: "faculty_name",
+    field: "faculty_name",
+    headerFilter: true,
+  },
+  {
+    title: "countA",
+    field: "countA",
     headerFilter: true,
     formatter: heatFormatter,
     formatterParams: {
@@ -190,5 +192,11 @@ export const columnsDef = [
       clearable: true, //show clear "x" button on editor
       sort: "asc", //sort direction for the values list
     },
+  },
+  {
+    title: "commencement",
+    field: "commencement",
+    editor: "date",
+    format: "yyyy-MM-dd",
   },
 ];

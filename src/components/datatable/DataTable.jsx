@@ -2,9 +2,10 @@ import "./DataTable.css";
 import React, { useEffect, useRef, useState } from "react";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "tabulator-tables/dist/css/tabulator.min.css";
-import { setTableInstance, getTableInstance } from "../utils/TableManager";
-import { fetchPageData, updateRow } from "../services/googleSheetsService";
-import { columnsDef } from "../helpers/columns_def";
+import { setTableInstance, getTableInstance } from "../../utils/TableManager";
+import { fetchPageData, updateRow } from "../../services/googleSheetsService";
+import { columnsDef } from "../../helpers/columns_def";
+import { supabase } from "../../services/supabaseClient";
 
 const GAS_URL =
   "https://script.google.com/macros/s/AKfycbyxay9MtJma37qCr6O81ew7uReaQuTA3xCsE_nyW198vC8AP6d2wsYIwguE37q9IEA3/exec"; //import.meta.env.VITE_GAS_WEBAPP_URL
@@ -17,12 +18,13 @@ export default function DataTable() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
-  const getParams = {
-    webAppUrl: GAS_URL,
-    page: currentPage,
-    size: 50,
-    email: "",
-  };
+
+  // const getParams = {
+  //   webAppUrl: GAS_URL,
+  //   page: currentPage,
+  //   size: 50,
+  //   email: "",
+  // };
 
   // console.log(currentPage);
   // console.log(getParams);
@@ -37,29 +39,29 @@ export default function DataTable() {
 
     setLoading(true);
 
-    try {
-      const { data, totalPages, currentPage } = await fetchPageData(
-        getParams.webAppUrl,
-        getParams.page,
-        getParams.size,
-        getParams.email
-      );
-      if (table) {
-        await table.setData(data);
-        setTotalPages(totalPages);
-        setCurrentPage(currentPage);
-      }
-    } catch (error) {
-      if (table) {
-        table.alert("Failed to load data", "error", 3000);
-      }
-      console.error("Failed to load page:", error);
-    } finally {
-      setLoading(false);
-      if (table) {
-        table.clearAlert();
-      }
-    }
+    // try {
+    //   const { data, totalPages, currentPage } = await fetchPageData(
+    //     getParams.webAppUrl,
+    //     getParams.page,
+    //     getParams.size,
+    //     getParams.email
+    //   );
+    //   if (table) {
+    //     await table.setData(data);
+    //     setTotalPages(totalPages);
+    //     setCurrentPage(currentPage);
+    //   }
+    // } catch (error) {
+    //   if (table) {
+    //     table.alert("Failed to load data", "error", 3000);
+    //   }
+    //   console.error("Failed to load page:", error);
+    // } finally {
+    //   setLoading(false);
+    //   if (table) {
+    //     table.clearAlert();
+    //   }
+    // }
   }
 
   useEffect(() => {
@@ -71,12 +73,12 @@ export default function DataTable() {
       if (tableRef.current && !getTableInstance()) {
         setInitializing(true);
 
-        const { data, totalPages, currentPage } = await fetchPageData(
-          getParams.webAppUrl,
-          getParams.page,
-          getParams.size,
-          getParams.email
-        );
+        // const { data, totalPages, currentPage } = await fetchPageData(
+        //   getParams.webAppUrl,
+        //   getParams.page,
+        //   getParams.size,
+        //   getParams.email
+        // );
 
         const table = new Tabulator(tableRef.current, {
           index: "unique_id",
@@ -84,7 +86,8 @@ export default function DataTable() {
           layout: "fitDataStretch",
           pagination: false,
           data: data,
-          columns: columnsDef,
+          // columns: columnsDef,
+          autoColumns: true,
           groupBy: "userid",
           cellEdited: async (cell) => {
             const rowData = cell.getRow().getData();
