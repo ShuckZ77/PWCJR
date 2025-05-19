@@ -6,6 +6,12 @@ import { supabase } from "../services/supabaseClient";
 function LoginPage() {
   const { user, authChecked } = useAuth();
 
+  const isLocalhost = window.location.hostname === "localhost";
+
+  const redirectTo = isLocalhost
+    ? "http://localhost:3000"
+    : "https://shuckz77.github.io/PWCJR/"; // Trailing slash is important for Supabase!
+
   if (!authChecked) {
     return (
       <div style={{ textAlign: "center", marginTop: 40 }}>
@@ -28,6 +34,7 @@ function LoginPage() {
         providers={["google"]}
         appearance={{ theme: ThemeSupa }}
         onlyThirdPartyProviders
+        redirectTo={redirectTo}
       />
     </div>
   );
