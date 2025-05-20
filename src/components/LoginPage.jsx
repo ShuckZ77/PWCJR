@@ -27,6 +27,7 @@ function LoginPage() {
   }
 
   return (
+    //redirectTo
     <div style={{ maxWidth: 400, margin: "50px auto" }}>
       <h2>Sign in with your pw.live email</h2>
       <Auth
@@ -34,7 +35,7 @@ function LoginPage() {
         providers={["google"]}
         appearance={{ theme: ThemeSupa }}
         onlyThirdPartyProviders
-        redirectTo={redirectTo}
+        redirectTo={window.location.origin + window.location.pathname}
       />
     </div>
   );

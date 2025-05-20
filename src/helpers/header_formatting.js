@@ -27,10 +27,12 @@ export function headerFormatter(tableInstance) {
     // console.log(group);
 
     const groudHeadline = `
-      <span>    
-        ${value}  
+      <span style="color: #003366; padding: 4px 8px; border-radius: 4px;">
+        ${value} (${data[0].primary_number})  
+        |
+        G${data[0].class}
         | 
-        Total ${count} items
+        Absent = ${data[0].countA}
         |
         Avg. WTM = ${
           presentCount != 0 ? Math.ceil(aggregrateWTM / presentCount) : 0
@@ -39,8 +41,7 @@ export function headerFormatter(tableInstance) {
         Avg. Rating = ${
           ratingCount != 0 ? Math.ceil(aggregrateRatings / ratingCount) : 0
         }
-        | 
-        Agg. Absent = ${data[0].countA}
+        
       </span>      
       `;
 

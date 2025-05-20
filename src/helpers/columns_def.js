@@ -24,8 +24,41 @@ export const columnsDef = [
   {
     title: "class_date",
     field: "class_date",
-    // sorter: "string",
+    sorter: "date",
+    sorterParams: {
+      format: "yyyy-MM-dd",
+      alignEmptyValues: "top",
+    },
     headerFilter: true,
+    frozen: true,
+  },
+  {
+    title: "primary_number",
+    field: "primary_number",
+    sorter: "string",
+    headerFilter: true,
+  },
+  {
+    title: "attendance_status",
+    field: "attendance_status",
+    headerFilter: true,
+    formatter: absentFormatter,
+  },
+  {
+    title: "faculty_name",
+    field: "faculty_name",
+    headerFilter: true,
+  },
+  {
+    title: "countA",
+    field: "countA",
+    headerFilter: "number",
+    formatter: heatFormatter,
+    headerFilterFunc: ">=",
+    formatterParams: {
+      minValue: 0,
+      maxValue: 5, // pick your expected maximum here!
+    },
   },
   {
     title: "batch_id",
@@ -43,35 +76,6 @@ export const columnsDef = [
     // sorter: "string",
   },
   {
-    title: "user_count",
-    field: "user_count",
-    // sorter: "string",
-  },
-  {
-    title: "mentor_name",
-    field: "mentor_name",
-    sorter: "string",
-    headerFilter: true,
-  },
-  {
-    title: "mentor_pwid",
-    field: "mentor_pwid",
-    sorter: "string",
-    headerFilter: true,
-  },
-  {
-    title: "mentor_email",
-    field: "mentor_email",
-    sorter: "string",
-    headerFilter: true,
-  },
-  {
-    title: "mentor_phone",
-    field: "mentor_phone",
-    // sorter: "string",
-    headerFilter: true,
-  },
-  {
     title: "batch_name",
     field: "batch_name",
     sorter: "string",
@@ -83,33 +87,12 @@ export const columnsDef = [
     sorter: "string",
     headerFilter: true,
   },
-  {
-    title: "primary_number",
-    field: "primary_number",
-    // sorter: "string",
-  },
+
   {
     title: "class",
     field: "class",
     // sorter: "string",
     headerFilter: true,
-  },
-  {
-    title: "payment_type",
-    field: "payment_type",
-    // sorter: "string",
-    headerFilter: true,
-  },
-  {
-    title: "payment_status",
-    field: "payment_status",
-    // sorter: "string",
-    headerFilter: true,
-  },
-  {
-    title: "first_payment_date",
-    field: "first_payment_date",
-    // sorter: "string",
   },
   {
     title: "e_mandate",
@@ -139,12 +122,15 @@ export const columnsDef = [
   {
     title: "watchtime_in_minutes",
     field: "watchtime_in_minutes",
-    // sorter: "string",
+    sorter: "number",
+    headerFilter: true,
   },
   {
     title: "rating",
     field: "rating",
-    // sorter: "string",
+    headerFilter: true,
+    sorter: "number",
+    // formatter: "star",
   },
   {
     title: "feedback",
@@ -152,26 +138,53 @@ export const columnsDef = [
     width: 200,
     // sorter: "string",
   },
+
   {
-    title: "attendance_status",
-    field: "attendance_status",
-    headerFilter: true,
-    formatter: absentFormatter,
-  },
-  {
-    title: "faculty_name",
-    field: "faculty_name",
+    title: "mentor_name",
+    field: "mentor_name",
+    sorter: "string",
     headerFilter: true,
   },
   {
-    title: "countA",
-    field: "countA",
+    title: "mentor_pwid",
+    field: "mentor_pwid",
+    sorter: "string",
     headerFilter: true,
-    formatter: heatFormatter,
-    formatterParams: {
-      minValue: 0,
-      maxValue: 5, // pick your expected maximum here!
-    },
+  },
+  {
+    title: "mentor_email",
+    field: "mentor_email",
+    sorter: "string",
+    headerFilter: true,
+  },
+  {
+    title: "mentor_phone",
+    field: "mentor_phone",
+    // sorter: "string",
+    headerFilter: true,
+  },
+  {
+    title: "user_count",
+    field: "user_count",
+    sorter: "number",
+    headerFilter: true,
+  },
+  {
+    title: "payment_type",
+    field: "payment_type",
+    // sorter: "string",
+    headerFilter: true,
+  },
+  {
+    title: "payment_status",
+    field: "payment_status",
+    // sorter: "string",
+    headerFilter: true,
+  },
+  {
+    title: "first_payment_date",
+    field: "first_payment_date",
+    // sorter: "string",
   },
   {
     title: "call_pickedBy",
@@ -184,7 +197,7 @@ export const columnsDef = [
     },
   },
   {
-    title: "disposition",
+    title: "non_attending_reason",
     field: "disposition",
     editor: "list",
     editorParams: {

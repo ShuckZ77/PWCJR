@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 import { useEffect, useRef, useState } from "react";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "tabulator-tables/dist/css/tabulator.min.css";
+import "./DataTable.css";
 // import { setTableInstance, getTableInstance } from "../../utils/TableManager";
 import { columnsDef } from "../../helpers/columns_def";
 import { calculatedAbsentCount } from "../../helpers/calculatedAbsentCount";
@@ -12,7 +13,7 @@ import { headerFormatter } from "../../helpers/header_formatting";
 import DateRangeSelect from "./DateRangeSelect";
 import { supabase } from "../../services/supabaseClient";
 import StudentProfileModal from "./StudentProfileModal";
-import "./DataTable.css";
+
 
 
 const PAGE_SIZE = 1000;
@@ -113,7 +114,7 @@ function DataTableNew() {
         columns: columnsDef,
         paginationCounter: "rows",
         groupStartOpen: false,
-        placeholder: "No Data Available",
+        placeholder: "No Data Set",
         dependencies: {
           DateTime: DateTime,
         },
@@ -126,8 +127,11 @@ function DataTableNew() {
       headerFormatter(tabulatorInstance);
       tabulatorInstance.current.setPage(currPage);
       tabulatorInstance.current.hideColumn("batch_id");
-      // tabulatorInstance.current.hideColumn("user_id");
+      tabulatorInstance.current.hideColumn("user_id");
       tabulatorInstance.current.hideColumn("room_id");
+      tabulatorInstance.current.hideColumn("batch_name");
+      tabulatorInstance.current.hideColumn("student_name");
+      tabulatorInstance.current.hideColumn("class");
       tabulatorInstance.current.hideColumn("mentor_pwid");
       tabulatorInstance.current.hideColumn("mentor_email");
       tabulatorInstance.current.hideColumn("mentor_phone");
@@ -136,6 +140,8 @@ function DataTableNew() {
       tabulatorInstance.current.hideColumn("erp_id");
       tabulatorInstance.current.hideColumn("date_range");
       tabulatorInstance.current.hideColumn("date_span");
+      tabulatorInstance.current.hideColumn("first_payment_date");
+      tabulatorInstance.current.setSort("class_date", "desc");;
     });
 
     tabulatorInstance.current.on("cellEdited", function (cell) {
