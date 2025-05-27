@@ -10,7 +10,7 @@ export async function fetchRowsFromDB(
 ) {
   if (MENTOR_EMAIL) {
     const { data, error } = await supabase
-      .from("attendance_mmi")
+      .from("combined_df")
       .select("*")
       .eq("mentor_email", MENTOR_EMAIL)
       .gte("class_date", START_DATE)
@@ -30,7 +30,7 @@ export async function fetchRowsFromDB(
     };
   } else {
     const { data, error } = await supabase
-      .from("attendance_mmi")
+      .from("combined_df")
       .select("*")
       .gte("class_date", START_DATE)
       .lte("class_date", END_DATE)

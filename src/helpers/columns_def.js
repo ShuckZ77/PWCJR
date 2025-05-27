@@ -1,3 +1,8 @@
+import { fetchAppendixFromDB } from "../hooks/fetch_appendix_fromDB";
+
+const call_pickedby_values = (await fetchAppendixFromDB('call_pickedby')).data.map(e=>e.call_pickedby) || [];
+const dispositon_values = (await fetchAppendixFromDB('disposition')).data.map(e=>e.disposition) || [];
+
 function heatFormatter(cell, formatterParams) {
   const val = Number(cell.getValue()) || 0;
   const min = formatterParams.minValue ?? 0;
@@ -50,7 +55,7 @@ export const columnsDef = [
     headerFilter: true,
   },
   {
-    title: "countA",
+    title: "Absent Count",
     field: "countA",
     headerFilter: "number",
     formatter: heatFormatter,
@@ -89,34 +94,19 @@ export const columnsDef = [
   },
 
   {
-    title: "class",
-    field: "class",
+    title: "student_class",
+    field: "student_class",
     // sorter: "string",
     headerFilter: true,
   },
   {
-    title: "e_mandate",
-    field: "e_mandate",
+    title: "attendance_span",
+    field: "attendance_span",
     // sorter: "string",
   },
   {
-    title: "roll_no",
-    field: "roll_no",
-    // sorter: "string",
-  },
-  {
-    title: "erp_id",
-    field: "erp_id",
-    // sorter: "string",
-  },
-  {
-    title: "date_range",
-    field: "date_range",
-    // sorter: "string",
-  },
-  {
-    title: "date_span",
-    field: "date_span",
+    title: "days_span",
+    field: "days_span",
     // sorter: "string",
   },
   {
@@ -170,28 +160,23 @@ export const columnsDef = [
     headerFilter: true,
   },
   {
-    title: "payment_type",
-    field: "payment_type",
-    // sorter: "string",
+    title: "first_class_attended",
+    field: "first_class_attended",
+    sorter: "datetime",
     headerFilter: true,
   },
   {
-    title: "payment_status",
-    field: "payment_status",
-    // sorter: "string",
+    title: "last_class_attended",
+    field: "last_class_attended",
+    sorter: "datetime",
     headerFilter: true,
   },
   {
-    title: "first_payment_date",
-    field: "first_payment_date",
-    // sorter: "string",
-  },
-  {
-    title: "call_pickedBy",
-    field: "call_pickedBy",
+    title: "call_pickedby",
+    field: "call_pickedby",
     editor: "list",
     editorParams: {
-      values: ["red", "green", "blue", "orange"],
+      values: call_pickedby_values || [],
       clearable: true, //show clear "x" button on editor
       sort: "asc", //sort direction for the values list
     },
@@ -201,7 +186,7 @@ export const columnsDef = [
     field: "disposition",
     editor: "list",
     editorParams: {
-      values: ["red", "green", "blue", "orange"],
+      values: dispositon_values || [],
       clearable: true, //show clear "x" button on editor
       sort: "asc", //sort direction for the values list
     },

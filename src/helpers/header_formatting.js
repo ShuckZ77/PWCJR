@@ -30,7 +30,7 @@ export function headerFormatter(tableInstance) {
       <span style="color: #003366; padding: 4px 8px; border-radius: 4px;">
         ${value} (${data[0].primary_number})  
         |
-        G${data[0].class}
+        G${data[0].student_class}
         | 
         Absent = ${data[0].countA}
         |

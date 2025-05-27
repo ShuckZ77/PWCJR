@@ -4,6 +4,8 @@ import LoginPage from "./LoginPage";
 function AuthGate({ children }) {
   const { user, authChecked } = useAuth();
 
+  console.warn({ user, authChecked })
+
   if (!authChecked) {
     return (
       <div style={{ textAlign: "center", marginTop: 40 }}>

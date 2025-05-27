@@ -13,12 +13,12 @@ import { headerFormatter } from "../../helpers/header_formatting";
 import DateRangeSelect from "./DateRangeSelect";
 import { supabase } from "../../services/supabaseClient";
 import StudentProfileModal from "./StudentProfileModal";
+import { useAuth } from "../../context/AuthContext";
 
-
-
-const PAGE_SIZE = 1000;
+const PAGE_SIZE = 1500;
 
 function DataTableNew() {
+  const { user, authChecked } = useAuth();
   const tableRef = useRef(null);
   const tabulatorInstance = useRef(null); // We store the Tabulator instance here
   const [tableData, setTableData] = useState([]);
@@ -46,10 +46,12 @@ function DataTableNew() {
       await fetchRowsFromDB(
         START,
         END,
-        null,
+        user.email,
         dateRangeStart.format("YYYY-MM-DD"),
         dateRangeEnd.format("YYYY-MM-DD")
       );
+
+      // console.log(processedTableData)
 
     if (error) {
       alert("Failed to load data: " + error.message);
@@ -77,18 +79,19 @@ function DataTableNew() {
 
   async function updateData(row) {
     const response = await supabase
-      .from("attendance_mmi")
+      .from("combined_df")
       .update({
-        call_pickedBy: row.call_pickedBy || null,
+        call_pickedby: row.call_pickedby || null,
         disposition: row.disposition || null,
         commencement: row.commencement || null,
       })
       .eq("batch_id", row.batch_id)
       .eq("user_id", row.user_id)
+      .eq("room_id", row.room_id)
       .eq("class_date", row.class_date)
       .select();
 
-    console.log(response);
+    // console.log(response);
   }
 
   // ==== INITAL LOADING OF TABLE ====
@@ -135,12 +138,8 @@ function DataTableNew() {
       tabulatorInstance.current.hideColumn("mentor_pwid");
       tabulatorInstance.current.hideColumn("mentor_email");
       tabulatorInstance.current.hideColumn("mentor_phone");
-      tabulatorInstance.current.hideColumn("e_mandate");
-      tabulatorInstance.current.hideColumn("roll_no");
-      tabulatorInstance.current.hideColumn("erp_id");
-      tabulatorInstance.current.hideColumn("date_range");
-      tabulatorInstance.current.hideColumn("date_span");
-      tabulatorInstance.current.hideColumn("first_payment_date");
+      tabulatorInstance.current.hideColumn("days_span");
+      tabulatorInstance.current.hideColumn("attendance_span");
       tabulatorInstance.current.setSort("class_date", "desc");;
     });
 
