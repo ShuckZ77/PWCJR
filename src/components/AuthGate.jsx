@@ -4,7 +4,7 @@ import LoginPage from "./LoginPage";
 function AuthGate({ children }) {
   const { user, authChecked } = useAuth();
 
-  console.warn({ user, authChecked })
+  // console.warn({ user, authChecked })
 
   if (!authChecked) {
     return (

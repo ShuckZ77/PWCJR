@@ -5,7 +5,7 @@ import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "tabulator-tables/dist/css/tabulator.min.css";
 import "./DataTable.css";
 // import { setTableInstance, getTableInstance } from "../../utils/TableManager";
-import { columnsDef } from "../../helpers/columns_def";
+import { columnsDef } from "../../helpers/columns_def"
 import { calculatedAbsentCount } from "../../helpers/calculatedAbsentCount";
 // import { usePaginatedSupabaseTable } from "../../hooks/usePaginatedSupabaseTable";
 import { fetchRowsFromDB } from "../../hooks/fetchRowsFromDB";
@@ -14,11 +14,12 @@ import DateRangeSelect from "./DateRangeSelect";
 import { supabase } from "../../services/supabaseClient";
 import StudentProfileModal from "./StudentProfileModal";
 import { useAuth } from "../../context/AuthContext";
+import { fetchAppendixFromDB } from "../../hooks/fetch_appendix_fromDB";
 
 const PAGE_SIZE = 1500;
 
 function DataTableNew() {
-  const { user, authChecked } = useAuth();
+  let { user, authChecked } = useAuth();
   const tableRef = useRef(null);
   const tabulatorInstance = useRef(null); // We store the Tabulator instance here
   const [tableData, setTableData] = useState([]);
@@ -33,15 +34,29 @@ function DataTableNew() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
 
+  const [columnDefintion, setColumnDefinition] =  useState(columnsDef());
+
+  async function setColumnDef(){
+    const callPickedByValues = (await fetchAppendixFromDB("call_pickedby")).data.map((e) => e.call_pickedby);
+    const dispositionValues = (await fetchAppendixFromDB("disposition")).data.map((e) => e.disposition);
+    setColumnDefinition(columnsDef(callPickedByValues, dispositionValues));
+  }
 
   async function loadRows(START, END, replace = false) {
+    const temp = ["rishish.shukla@pw.live", "payalphartiyal@pw.live", "ravi.prakash1@pw.live", "ateeb.yusuf@pw.live", "sumit.jadaun@pw.live", "shristy.katiyar@pw.live"]
+
+    if(temp.includes(user.email)){
+      user.email = null
+    }
+
+    await setColumnDef();
     console.log("Load Rows Function Runs");
 
     if (tabulatorInstance.current) {
       setCurrPage(tabulatorInstance.current.getPage());
     }
 
-    setLoading(true);
+    setLoading(true); //user.email
     const { processedTableData, rowsFetchedLength, error } =
       await fetchRowsFromDB(
         START,
@@ -96,7 +111,8 @@ function DataTableNew() {
 
   // ==== INITAL LOADING OF TABLE ====
   // useEffect(() => {11
-  //   loadRows(0, PAGE_SIZE - 1);
+    
+  //   setColumnDef();
   // }, []);
 
   // ==== SETTING UP TABULATOR EVERYTIME TABLEDATA CHANGES ====
@@ -114,7 +130,7 @@ function DataTableNew() {
         pagination: true,
         paginationOutOfRange: "last",
         data: tableData,
-        columns: columnsDef,
+        columns: columnDefintion,
         paginationCounter: "rows",
         groupStartOpen: false,
         placeholder: "No Data Set",
@@ -136,7 +152,7 @@ function DataTableNew() {
       tabulatorInstance.current.hideColumn("student_name");
       tabulatorInstance.current.hideColumn("class");
       tabulatorInstance.current.hideColumn("mentor_pwid");
-      tabulatorInstance.current.hideColumn("mentor_email");
+      // tabulatorInstance.current.hideColumn("mentor_email");
       tabulatorInstance.current.hideColumn("mentor_phone");
       tabulatorInstance.current.hideColumn("days_span");
       tabulatorInstance.current.hideColumn("attendance_span");
@@ -146,17 +162,17 @@ function DataTableNew() {
     tabulatorInstance.current.on("cellEdited", function (cell) {
       //cell - cell component
       const row = cell.getRow().getData();
-      console.log("Cell Edited", row);
+      // console.log("Cell Edited", row);
       updateData(row);
     });
 
-    tabulatorInstance.current.on("groupClick", async function (e, group) {
-      //e - the click event object
-      //group - group component
-      console.log("Group header Clicked");
-      setSelectedUserId(group.getRows()[0].getData().user_id);
-      setModalOpen(true);
-    });
+    // tabulatorInstance.current.on("groupClick", async function (e, group) {
+    //   //e - the click event object
+    //   //group - group component
+    //   console.log("Group header Clicked");
+    //   setSelectedUserId(group.getRows()[0].getData().user_id);
+    //   setModalOpen(true);
+    // });
 
     // tabulatorInstance.current.on("pageLoaded", function (pageno) {
     //   //pageno - the number of the loaded page

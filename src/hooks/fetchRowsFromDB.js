@@ -13,6 +13,7 @@ export async function fetchRowsFromDB(
       .from("combined_df")
       .select("*")
       .eq("mentor_email", MENTOR_EMAIL)
+      .neq("primary_number", null)
       .gte("class_date", START_DATE)
       .lte("class_date", END_DATE)
       // .order("class_date", { ascending: true }) // <-- explicit ordering by date
@@ -34,6 +35,7 @@ export async function fetchRowsFromDB(
       .select("*")
       .gte("class_date", START_DATE)
       .lte("class_date", END_DATE)
+      .neq("primary_number", null)
       // .order("class_date", { ascending: true }) // <-- explicit ordering by date
       .order("user_id", { ascending: true }) // <-- secondary ordering by user
       .range(START, END);
